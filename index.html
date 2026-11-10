@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instax Mini State Model</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Modeling an Instant Camera</h1>
+    <p class="sub">A state-machine model of my Fujifilm Instax mini 7c instant camera — logic first, visuals second.</p>
+  </header>
+
+  <main>
+    <!-- ===== THE CAMERA (inputs) ===== -->
+    <section class="panel camera-panel">
+      <div id="camera" class="camera off">
+        <div class="flash-window"></div>
+        <div id="readyLight" class="ready-light" title="flash ready light"></div>
+        <div id="lens" class="lens"><div class="glass"></div></div>
+        <div class="counter-window">
+          <span class="counter-label">FILM</span>
+          <span id="counterDisplay" class="counter">—</span>
+        </div>
+        <div id="ejectSlot" class="eject-slot"></div>
+      </div>
+
+      <p id="message" class="message">The camera is off. Press the power button to extend the lens.</p>
+
+      <div class="controls">
+        <button id="powerBtn" type="button">⏻ Power (extend lens)</button>
+        <button id="shutterBtn" type="button" class="shutter">● Shutter</button>
+
+        <label for="dialSelect">Brightness dial (5 steps, like my mini 7c)</label>
+        <select id="dialSelect">
+          <option value="0">🏠 1 · Indoor / dim</option>
+          <option value="1">☁️ 2 · Cloudy</option>
+          <option value="2" selected>🌳 3 · Shade</option>
+          <option value="3">⛅ 4 · Sunny</option>
+          <option value="4">☀️ 5 · Very sunny</option>
+        </select>
+
+        <label for="sceneSelect">Where am I shooting? (the world, not the camera)</label>
+        <select id="sceneSelect">
+          <option value="0">My room at night</option>
+          <option value="1">Overcast day in Inwood Hill Park</option>
+          <option value="2" selected>Under the trees, light shade</option>
+          <option value="3">Sunny afternoon on the street</option>
+          <option value="4">Noon sun on the Hudson</option>
+        </select>
+
+        <div class="door-row">
+          <button id="doorBtn" type="button">Open back door</button>
+          <button id="loadBtn" type="button">Load new film pack</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== STATE INSPECTOR (shows the variables) ===== -->
+    <section class="panel">
+      <h2>State inspector</h2>
+      <p class="hint">These are the actual JavaScript variables. Watch them change.</p>
+      <table id="stateTable"></table>
+
+      <h2>Event log</h2>
+      <ol id="log" class="log" reversed></ol>
+    </section>
+
+    <!-- ===== OUTPUT (the prints) ===== -->
+    <section class="panel prints-panel">
+      <h2>Prints</h2>
+      <p class="hint">Instax prints develop slowly. Each one shows how the dial matched the scene.</p>
+      <div id="prints" class="prints"></div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

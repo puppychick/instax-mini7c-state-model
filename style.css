@@ -1,0 +1,169 @@
+:root {
+  --bg: #f6f1ea;
+  --panel: #ffffff;
+  --ink: #2b2622;
+  --muted: #8a8079;
+  --body: #f3ece0;      /* camera color: cream, like my mini 7c */
+  --body-dark: #b08a6e; /* brown trim around the lens and shutter */
+  --accent: #e2574c;
+  --ok: #3f9b62;
+  --warn: #d38b1f;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+header { padding: 24px 16px 8px; text-align: center; }
+h1 { margin: 0 0 4px; font-size: 1.6rem; }
+h2 { font-size: 1.05rem; margin: 0 0 6px; }
+.sub, .hint { color: var(--muted); margin: 0 0 12px; font-size: 0.9rem; }
+
+main {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  padding: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.panel {
+  background: var(--panel);
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+
+/* ---------- camera drawing ---------- */
+.camera {
+  position: relative;
+  width: 240px;
+  height: 200px;
+  margin: 0 auto 50px;
+  background: var(--body);
+  border-radius: 28px;
+  border: 3px solid var(--body-dark);
+  transition: filter 0.3s;
+}
+.camera.off { filter: saturate(0.6); }
+
+.flash-window {
+  position: absolute; top: 18px; right: 18px;
+  width: 60px; height: 34px;
+  background: repeating-linear-gradient(90deg, #eee 0 4px, #ddd 4px 8px);
+  border-radius: 6px;
+}
+.camera.flashing .flash-window { background: #fff; box-shadow: 0 0 60px 30px #fff; }
+
+.ready-light {
+  position: absolute; top: 26px; left: 22px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #777;
+}
+.ready-light.charging { background: var(--warn); animation: blink 0.4s infinite; }
+.ready-light.ready { background: #ff9b2f; box-shadow: 0 0 8px #ff9b2f; }
+@keyframes blink { 50% { opacity: 0.2; } }
+
+.lens {
+  position: absolute; left: 50%; top: 58px;
+  width: 104px; height: 104px; margin-left: -52px;
+  border-radius: 50%;
+  background: #c49a7a;
+  border: 6px solid #f8f3ea;
+  display: grid; place-items: center;
+  transition: transform 0.4s;
+  transform: scale(0.8);
+}
+.camera:not(.off) .lens { transform: scale(1.08); box-shadow: 0 6px 14px rgba(0,0,0,0.25); }
+.glass { width: 46px; height: 46px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #6c7a89, #1d232b); }
+
+.counter-window {
+  position: absolute; bottom: 14px; right: 16px;
+  background: #222; color: #ffcf6a;
+  border-radius: 6px; padding: 3px 8px;
+  font-family: "Courier New", monospace; text-align: center;
+}
+.counter-label { display: block; font-size: 0.55rem; color: #aaa; }
+.counter { font-size: 1.2rem; font-weight: bold; }
+
+.camera.door-open { border-style: dashed; border-color: var(--accent); }
+
+.eject-slot {
+  position: absolute; top: -10px; left: 50%;
+  width: 160px; height: 10px; margin-left: -80px;
+  background: #555; border-radius: 4px 4px 0 0;
+}
+.eject-slot.ejecting { background: #fff; box-shadow: 0 -20px 0 6px #fffdf7; transition: box-shadow 0.6s; }
+
+.message {
+  min-height: 44px;
+  background: #faf6f0;
+  border-left: 4px solid var(--muted);
+  padding: 8px 12px; border-radius: 6px;
+  font-size: 0.92rem;
+}
+.message.ok { border-color: var(--ok); }
+.message.warn { border-color: var(--warn); }
+.message.error { border-color: var(--accent); }
+
+/* ---------- controls ---------- */
+.controls { display: flex; flex-direction: column; gap: 8px; }
+.controls label { font-size: 0.82rem; color: var(--muted); margin-top: 6px; }
+button, select {
+  font: inherit; padding: 9px 12px;
+  border-radius: 8px; border: 1px solid #d5ccc3;
+  background: #fff; cursor: pointer;
+}
+button:hover { background: #f3ede6; }
+button.shutter { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: bold; }
+button.shutter:hover { background: #c94a40; }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+.door-row { display: flex; gap: 8px; }
+.door-row button { flex: 1; }
+
+/* ---------- state inspector ---------- */
+#stateTable { width: 100%; border-collapse: collapse; font-family: "SF Mono", Menlo, monospace; font-size: 0.85rem; margin-bottom: 16px; }
+#stateTable td { padding: 5px 6px; border-bottom: 1px solid #eee; }
+#stateTable td:first-child { color: var(--muted); }
+#stateTable tr.changed td:last-child { background: #fff3c4; transition: background 0s; }
+#stateTable td:last-child { transition: background 1.2s; }
+
+.log { font-size: 0.82rem; max-height: 240px; overflow-y: auto; padding-left: 26px; margin: 0; color: #4a433d; }
+.log li { margin-bottom: 4px; }
+
+/* ---------- prints ---------- */
+.prints { display: flex; flex-wrap: wrap; gap: 12px; }
+.print {
+  width: 108px; padding: 7px 7px 24px;
+  background: #fffdf7;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  transform: rotate(var(--tilt));
+  font-size: 0.68rem; text-align: center; color: var(--muted);
+}
+.print .image {
+  height: 86px;
+  margin-bottom: 6px;
+  /* starts dark grey-green, then "develops" */
+  filter: brightness(0.15) saturate(0) contrast(0.6);
+  transition: filter 6s ease-out;
+}
+.print.developed .image { filter: var(--final-filter); }
+.print.dark-slide { background: #1b1b1b; color: #888; }
+.print.dark-slide .image { background: #111 !important; filter: none; }
+
+/* scene "photos" drawn with gradients */
+.scene-0 { background: radial-gradient(circle at 70% 30%, #ffd88a 0 10%, transparent 11%), linear-gradient(#3b3550, #6b5a73); }
+.scene-1 { background: linear-gradient(#b8c0c8 0 45%, #6f8a5f 45%); }
+.scene-2 { background: radial-gradient(circle at 30% 60%, #3d6b35 0 22%, transparent 23%), radial-gradient(circle at 75% 55%, #4a7a3f 0 25%, transparent 26%), linear-gradient(#a9cfe0 0 45%, #6e9a5a 45%); }
+.scene-4 { background: radial-gradient(circle at 80% 20%, #fff2b0 0 9%, transparent 10%), linear-gradient(#8ecae6 0 50%, #c9b18a 50%); }
+.scene-3 { background: radial-gradient(circle at 50% 18%, #fff 0 10%, transparent 11%), linear-gradient(#5fb4e8 0 55%, #2f6f9f 55%); }
+
+@media (max-width: 400px) {
+  .camera { transform: scale(0.9); }
+}
